@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -20,7 +21,8 @@ public class MainActivity extends AppCompatActivity {
 
         final TextView textView = findViewById(R.id.tvResult);
 
-        Disposable disposable = Observable.just(1, 2, 3, 4, 5)
+        CompositeDisposable compositeDisposable = new CompositeDisposable();
+        compositeDisposable.add(Observable.just(1, 2, 3, 4, 5)
                 .filter(value -> value % 2 == 0)
                 .map(value -> value * value)
                 .map(value -> "Number: " + value)
@@ -28,11 +30,10 @@ public class MainActivity extends AppCompatActivity {
                 .subscribe(newValue -> {
                     String oldvalue = textView.getText().toString();
                     textView.setText(oldvalue + newValue + "\n"); },
-                        throwable -> textView.setText(throwable.toString()));
+                        throwable -> textView.setText(throwable.toString())));
+        //disposable.dispose();
 
-        disposable.dispose();
-
-      Observable.just("Hello")
+     /* Observable.just("Hello")
               .map(value -> Integer.parseInt(value))
               .map(value -> value.toString())
               .subscribe(new Observer<String>() {
